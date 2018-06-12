@@ -1,0 +1,16 @@
+{
+  "name": "gunmanagesystem",
+  "version": "1.0.0",
+  "description": "gun manage system",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "author": "varme",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "npm": "^6.1.0"
+  }
+}
