@@ -22,28 +22,36 @@
 //
 //  Imports
 //
-var Express = require("express");
+var RoutesLogin = require("./routes/login");
 var BodyParser = require("body-parser");
+var cookieParser = require("cookie-parser");
+var Express = require("express");
 var Util = require("util");
 
 //
 //  Constant.
 //
+var PORT = 3000;
 
 //  Create app.
 var app = Express();
 
+app.use(cookieParser());
 app.use(BodyParser.json());
 app.use(BodyParser.urlencoded({
     extended: true
 }));
 
+//  Login module.
+app.use("/login/", RoutesLogin);
+
 //  Set static dir.
 app.use(Express.static("static"));
 
 //  Bind port.
-app.listen(3000, function() {
+app.listen(PORT, function() {
     console.log(Util.format(
-        "Server listening on port 3000!"
+        "Server listening on port %d!",
+        PORT
     ));
 });

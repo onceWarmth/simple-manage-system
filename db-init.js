@@ -22,57 +22,36 @@
 //
 //  Imports.
 //
-var Sequlize = require("sequelize");
+var LibsModels = require("./libs/models");
+var LibsEncryption = require("./libs/encryption");
 
-//  Create sequlize.
-var sequlize = new Sequlize("gundb", "root", "root", {
-    host: "127.0.0.1",
-    dialect: "mysql",
-    logging: false
-});
+var Util = require("util");
+var Uuid = require("uuid");
 
-//  User model.
-var Users = null;
+var username = "admin";
+var password = "admin123";
 
-/**
- * User table 
- * 
- * identify: 0 is admin. 1 is salesman.
- */
-var userTable = {
-    id: {
-        type: Sequlize.STRING,
-        primaryKey: true
+var encryResult = LibsEncryption.HashPassword(password);
+var salt = encryResult.salt;
+var hash = encryResult.hash;
+
+LibsModels.Users.findOrCreate({
+    where: {
+        id: username
     },
-    passwordSalt: {
-        type: Sequlize.STRING,
-        allowNULL: false
-    },
-    passwordHash: {
-        type: Sequlize.STRING,
-        allowNULL: false
-    },
-    identify: {
-        type: Sequlize.INTEGER,
-        allowNULL: false
+    defaults: {
+        id: username,
+        passwordSalt: salt,
+        passwordHash: hash,
+        identify: 0 
     }
-};
+}).spread(function(user, created) {
 
-function ModelInitial() {
-
-    //  User tables.
-    Users = sequlize.define("users", userTable);
-
-    //  DB sync.
-    sequlize.sync();
-}
-
-(function() {
-    ModelInitial();
-})();
-
-//  Export public APIs.
-module.exports = {
-    Users: Users,
-    Op: Sequlize.Op
-};
+    if (created) {
+        console.log("Create success.");
+    } else {
+        console.log("Already existed.");
+    }
+}).catch(function(error) {
+    console.log(error);
+});

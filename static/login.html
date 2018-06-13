@@ -34,12 +34,32 @@
     <script type="text/javascript" src="js/bootstrap.js"></script>
     <script type="text/javascript">
 
+        $(document).ready(function() {
+
+            $.ajax({
+                type: "POST",
+                url: "/login/isLogin/",
+                success: function(data, textStatus, jqXHR) {
+                    console.log(data);
+                    if (data.response == 1) {
+
+                        //  redirect to index.
+                        
+                    }
+                },
+                error: function(jqXHR, textStatus, error) {
+                    console.log("Docunmet ready callback error. ", error);
+                    return;
+                }
+            })
+        });
+
         $("#submitButton").click(function() {
             console.log("Submint button click.");
 
             var username = $("#username").val();
             var password = $("#password").val();
-            
+
             //  Check if username and password are invalid.
             if (username == "") {
                 alert("请输入用户名");
@@ -52,8 +72,8 @@
             }
 
             //  Create RegExp object.
-            var usernamePattern = new RegExp("/[a-zA-Z0-9_]{3,16}/");
-            var passwordPattern = new RegExp("/[a-zA-Z0-9_]{6,128}/");
+            var usernamePattern = /^[a-zA-Z0-9_]{3,16}$/;
+            var passwordPattern = /^[a-zA-Z0-9_]{6,128}$/;
 
             if (!usernamePattern.test(username)) {
                 alert("用户名只能由 3-16 位的大小写字母、数字以及下划线组成，请您输入正确形式的用户名");
@@ -64,9 +84,24 @@
                 alert("密码只能由 6-128 位的大小写字母、数字以及下划线组成，请您输入正确形式密码");
                 return;
             }
+
+            var data  = {
+                "username": username,
+                "password": password
+            };
             
             //  Do login.
-            
+            $.ajax({
+                type: "POST",
+                url: "/login/login/",
+                data: data,
+                success: function(data, textStatus, jqXHR) {
+                    console.log(data);
+                },
+                error: function(jqXHR, textStatus, error) {
+                    console.log(error);
+                }
+            });
             
         });
 

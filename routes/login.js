@@ -34,3 +34,12 @@ var router = Express.Router();
 
 //  Login router.
 router.post("/login/", SrvLogin.login);
+
+//  Check is login.
+router.post("/isLogin/", SrvLogin.isLogin);
+
+//  Logout router.
+router.post("/logout/", SrvLogin.logout);
+
+//  Exports public APIs.
+module.exports = router;

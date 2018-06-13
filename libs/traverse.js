@@ -187,6 +187,48 @@ function Traverse(inner, path) {
     };
 
     /**
+     *  Assume that the inner object is username.
+     * 
+     *  @return {Travser} - Self.
+     */
+    this.isUsername = function() {
+
+        //  Create username pattern.
+        var usernamePattern = /^[a-zA-Z0-9_]{3,16}$/;
+
+        //  Ensure the value is username.
+        if (!usernamePattern.test(inner)) {
+            throw new Error(Util.format(
+                "Traverse::isUsername(): Object is not username. (path=\"%s\").",
+                path
+            ));
+        }
+
+        return self;
+    };
+
+    /**
+     *  Assume that the inner object is password.
+     *  
+     *  @return {Travser} - Self.
+     */
+    this.isPassword = function() {
+
+        //  Create password pattern.
+        var pattern = /^[a-zA-Z0-9_]{6,128}$/;
+
+        //  Ensurn the value is password.
+        if (!pattern.test(inner)) {
+            throw new Error(Util.format(
+                "Traverse::isPassword(): Object is not password. (path=\"%s\").",
+                path
+            ));
+        }
+        
+        return self;
+    }
+
+    /**
      *  Give minimum value threshold to the inner object (expect: inner >= threshold).
      *
      *  @param {*} threshold - The threshold.

@@ -22,57 +22,31 @@
 //
 //  Imports.
 //
-var Sequlize = require("sequelize");
+var Crypto = require("crypto");
 
-//  Create sequlize.
-var sequlize = new Sequlize("gundb", "root", "root", {
-    host: "127.0.0.1",
-    dialect: "mysql",
-    logging: false
-});
 
-//  User model.
-var Users = null;
+//
+//  Public functions.
+//
 
-/**
- * User table 
- * 
- * identify: 0 is admin. 1 is salesman.
- */
-var userTable = {
-    id: {
-        type: Sequlize.STRING,
-        primaryKey: true
-    },
-    passwordSalt: {
-        type: Sequlize.STRING,
-        allowNULL: false
-    },
-    passwordHash: {
-        type: Sequlize.STRING,
-        allowNULL: false
-    },
-    identify: {
-        type: Sequlize.INTEGER,
-        allowNULL: false
-    }
-};
-
-function ModelInitial() {
-
-    //  User tables.
-    Users = sequlize.define("users", userTable);
-
-    //  DB sync.
-    sequlize.sync();
+//  Encry password.
+function HashPassword(password) {
+    var salt = Crypto.randomBytes(6).toString("base64");
+    var hash = Crypto.createHash("sha256").update(password + salt).digest("hex");
+    return {
+        salt: salt,
+        hash: hash
+    };
 }
 
-(function() {
-    ModelInitial();
-})();
+//  Check password.
+function CheckPassword(srcPwd, realHash, salt) {
+    var srcHash = Crypto.createHash("sha256").update(srcPwd + salt).digest("hex");
+    return (srcHash === realHash);
+}
 
 //  Export public APIs.
 module.exports = {
-    Users: Users,
-    Op: Sequlize.Op
-};
+    HashPassword: HashPassword,
+    CheckPassword: CheckPassword
+}
