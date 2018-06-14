@@ -193,9 +193,10 @@ function addReport(request, response) {
                             + barrelsSalesSum * BARRELS_COST;
                     }
 
+                    console.log("Cost: ", cost);
                     var commission = 0;
                     if (cost <= 1000) {
-                        commission += 0.10 * commission;
+                        commission += 0.10 * cost;
                         commission = Math.floor(commission * 100) / 100;
                     } else if (cost <= 1800) {
                         commission += 0.10 * 1000;
@@ -207,6 +208,8 @@ function addReport(request, response) {
                         commission += 0.20 * (cost - 1800);
                         commission = Math.floor(commission * 100) / 100;
                     }
+
+                    console.log("Commission : ", commission);
 
                     var commissionId = Uuid.v1();
                     LibsModels.Commission.findOrCreate({
