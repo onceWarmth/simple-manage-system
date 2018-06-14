@@ -153,6 +153,7 @@ function addReport(request, response) {
                 response: 0,
                 message: "枪管销售额已经达到本月最高。"
             });
+            return;
         }
 
 
