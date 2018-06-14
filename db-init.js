@@ -43,7 +43,43 @@ LibsModels.Users.findOrCreate({
         id: username,
         passwordSalt: salt,
         passwordHash: hash,
-        identify: 0 
+        identify: 0,
+        locksSales: 0,
+        stocksSales: 0,
+        barrelsSales: 0,
+        commission: 0
+    }
+}).spread(function(user, created) {
+
+    if (created) {
+        console.log("Create success.");
+    } else {
+        console.log("Already existed.");
+    }
+}).catch(function(error) {
+    console.log(error);
+});
+
+username = "user";
+password = "user123";
+
+encryResult = LibsEncryption.HashPassword(password);
+salt = encryResult.salt;
+hash = encryResult.hash;
+
+LibsModels.Users.findOrCreate({
+    where: {
+        id: username
+    },
+    defaults: {
+        id: username,
+        passwordSalt: salt,
+        passwordHash: hash,
+        identify: 1,
+        locksSales: 0,
+        stocksSales: 0,
+        barrelsSales: 0,
+        commission: 0
     }
 }).spread(function(user, created) {
 

@@ -20,46 +20,22 @@
 //
 
 //
-//  Imports
+//  Public function.
 //
-var RoutesGunsmith = require("./routes/gunsmith");
-var RoutesLogin = require("./routes/login");
-var RoutesSalesperson = require("./routes/salesman");
-var BodyParser = require("body-parser");
-var cookieParser = require("cookie-parser");
-var Express = require("express");
-var Util = require("util");
+function isGunsmithIdentify(request) {
 
-//
-//  Constant.
-//
-var PORT = 3000;
+    var cookies = request.cookies;
+    return (cookies.identify == 0);
+}
 
-//  Create app.
-var app = Express();
+function isSalesmanIdentify(request) {
 
-app.use(cookieParser());
-app.use(BodyParser.json());
-app.use(BodyParser.urlencoded({
-    extended: true
-}));
+    var cookies = request.cookies;
+    return (cookies.identify == 1);
+}
 
-//  Login module.
-app.use("/login/", RoutesLogin);
-
-//  Gunsmith module.
-app.use("/gunsmith/", RoutesGunsmith);
-
-//  Salesman module.
-app.use("/salesman/", RoutesSalesperson);
-
-//  Set static dir.
-app.use(Express.static("static"));
-
-//  Bind port.
-app.listen(PORT, function() {
-    console.log(Util.format(
-        "Server listening on port %d!",
-        PORT
-    ));
-});
+//  Export public APIs.
+module.exports = {
+    isGunsmithIdentify: isGunsmithIdentify,
+    isSalesmanIdentify: isSalesmanIdentify
+};

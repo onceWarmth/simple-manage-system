@@ -217,7 +217,7 @@ function Traverse(inner, path) {
         //  Create password pattern.
         var pattern = /^[a-zA-Z0-9_]{6,128}$/;
 
-        //  Ensurn the value is password.
+        //  Ensure the value is password.
         if (!pattern.test(inner)) {
             throw new Error(Util.format(
                 "Traverse::isPassword(): Object is not password. (path=\"%s\").",
@@ -225,6 +225,61 @@ function Traverse(inner, path) {
             ));
         }
         
+        return self;
+    }
+
+    /**
+     *  Assume that the inner object is city.
+     * 
+     *  @return (Travser) - Self
+     */
+    this.isCity = function() {
+        
+        if (inner.length > 32) {
+            throw new Error(Util.format(
+                "Traverse::isCity(): Object is not city. (path=\"%s\")",
+                path
+            ));
+        }
+
+        return self
+    }
+
+    /**
+     *  Assume that the inner object is positive integer string.
+     * 
+     *  @return (Travser) - Self
+     */
+    this.isPositiveIntegerString = function() {
+
+        //  Ensure the value is positive integer.
+        var value = parseInt(inner);
+        if (!Number.isInteger(value) || value < 0) {
+            throw new Error(Util.format(
+                "Travser::isPositiveIntegerString(): Object is not positive integer string. (path=\"%s\").",
+                path
+            ));
+        }
+
+        return self;
+    }
+
+     /**
+     *  Assume that the inner object is locks sales.
+     * 
+     *  @return (Travser) - Self
+     */
+    this.isLocksSales = function() {
+
+        //  Ensure the value is positive integer.
+        var value = parseInt(inner);
+        if (!Number.isInteger(value) || value < -1) {
+            throw new Error(Util.format(
+                "Travser::isLocksSales(): Object is not locks sales value. (path=\"%s\").",
+                path
+            ));
+        }
+
         return self;
     }
 

@@ -11,9 +11,9 @@
         <title>login</title>
 
         <!-- Bootstrap core CSS -->
-        <link href="css/bootstrap.css" rel="stylesheet">
+        <link href="/css/bootstrap.css" rel="stylesheet">
 
-        <link href="css/login.css" rel="stylesheet">
+        <link href="/css/login.css" rel="stylesheet">
 
     </head>
 
@@ -34,6 +34,9 @@
     <script type="text/javascript" src="js/bootstrap.js"></script>
     <script type="text/javascript">
 
+        var gunsmithUrl = "/gunsmith/salesperson.html";
+        var salespersonUrl = "/salesperson/sales.html";
+
         $(document).ready(function() {
 
             $.ajax({
@@ -44,14 +47,23 @@
                     if (data.response == 1) {
 
                         //  redirect to index.
-                        
+                        var identify = data.identify;
+                        if (identify == 0) {
+                            
+                            //  Redirect to gunsmith index.
+                            window.location.href = gunsmithUrl;
+                        } else if (identify == 1) {
+
+                            //  Redirect to salesman index.
+                            window.location.href = salespersonUrl;
+                        }
                     }
                 },
                 error: function(jqXHR, textStatus, error) {
                     console.log("Docunmet ready callback error. ", error);
                     return;
                 }
-            })
+            });
         });
 
         $("#submitButton").click(function() {
@@ -97,8 +109,20 @@
                 data: data,
                 success: function(data, textStatus, jqXHR) {
                     console.log(data);
+                    
+                    if (data.response != 1) {
+                        alert(data.message);
+                    }
+
+                    var identify = data.identify;
+                    if (identify == 0) {
+                        window.location.href = gunsmithUrl;
+                    } else if (identify == 1) {
+                        window.location.href = salespersonUrl;
+                    }
                 },
                 error: function(jqXHR, textStatus, error) {
+                    alert("服务器开小差了～～请检查网络或联系系统管理员");
                     console.log(error);
                 }
             });

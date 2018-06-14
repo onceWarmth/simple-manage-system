@@ -117,7 +117,9 @@ function login(request, response) {
             response.cookie("identify", project.identify);
 
             //  REPLY: login success.
-            response.json(g_LoginConfiguration.getLoginSuccessResponse());
+            var data = g_LoginConfiguration.getLoginSuccessResponse();
+            data["identify"] = project.identify;
+            response.json(data);
             return;
         } else {
 
@@ -139,13 +141,13 @@ function login(request, response) {
 
 function isLogin(request, response) {
 
-//    console.log("Request : ", request);
-    console.log("Cookie : ", request.cookies);
-    if (request.cookies) {
+    if (request.cookies.username && request.cookies.identify) {
         
         //  REPLY: user already login.
         response.json({
-            "response": 1
+            "response": 1,
+            "username": request.cookies.username,
+            "identify": request.cookies.identify
         });
     } else {
 
@@ -161,7 +163,7 @@ function isLogin(request, response) {
 function logout(request, response) {
 
     //  Clear cookie.
-    resposne.clearCookie("username");
+    response.clearCookie("username");
     response.clearCookie("password");
 
     //  REPLY: logout success.

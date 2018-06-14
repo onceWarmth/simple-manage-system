@@ -20,46 +20,19 @@
 //
 
 //
-//  Imports
+//  Imports.
 //
-var RoutesGunsmith = require("./routes/gunsmith");
-var RoutesLogin = require("./routes/login");
-var RoutesSalesperson = require("./routes/salesman");
-var BodyParser = require("body-parser");
-var cookieParser = require("cookie-parser");
+var SrvSalesman = require("../service/salesman");
 var Express = require("express");
-var Util = require("util");
 
-//
-//  Constant.
-//
-var PORT = 3000;
+//  Create router.
+var router = Express.Router();
 
-//  Create app.
-var app = Express();
+router.post("/addReport/", SrvSalesman.addReport);
+router.post("/deleteReport/", SrvSalesman.deleteReport);
+router.post("/getReportData/", SrvSalesman.getCurrentMonthReport);
+router.post("/getHistoryReports/", SrvSalesman.getHistoryReports);
+router.post("/getHistoryCommision/", SrvSalesman.getHistoryCommission);
 
-app.use(cookieParser());
-app.use(BodyParser.json());
-app.use(BodyParser.urlencoded({
-    extended: true
-}));
-
-//  Login module.
-app.use("/login/", RoutesLogin);
-
-//  Gunsmith module.
-app.use("/gunsmith/", RoutesGunsmith);
-
-//  Salesman module.
-app.use("/salesman/", RoutesSalesperson);
-
-//  Set static dir.
-app.use(Express.static("static"));
-
-//  Bind port.
-app.listen(PORT, function() {
-    console.log(Util.format(
-        "Server listening on port %d!",
-        PORT
-    ));
-});
+//  Exports public APIs.
+module.exports = router;

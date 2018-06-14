@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <meta name="description" content="">
+        <meta name="author" content="varme">
+
+        <title>枪支管理系统</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="/css/bootstrap.css" rel="stylesheet">
+
+        <link href="/css/index.css" rel="stylesheet">
+
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">枪支管理系统</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">控制台</a></li>
+                        <li class="dropdown">
+                            <a id="username" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" onclick="logout();">注销</a></li>
+                            </ul>
+                        </li>
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar">
+                    <ul class="nav nav-sidebar">
+                        <li><a href="./monthreport.html">月度报表<span class="sr-only"></span></a></li>
+                        <li><a href="./historyreport.html">历史报表<span class="sr-only"></span></a></li>
+                        <li class="active"><a href="#">销售员管理<span class="sr-only"></span></a></li>
+                    </ul>
+                    <ul class="nav nav-sidebar">
+                        <li><a href="#" onclick="logout();">注销<span class="sr-only"></span></a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-9 col-sm-offset-3 col-md-offset-2 main">
+                    <h1 class="page-header">销售员管理</h1>
+
+                    <div id="page_adn_add_div" class="row" style="margin-bottom: 10px">
+                        <div class="col-md-1">
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#addSalesperson">添加</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" style="text-align: center">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>用户名</th>
+                                    <th>枪锁总销售额</th>
+                                    <th>枪支总销售额</th>
+                                    <th>枪管总销售额</th>
+                                    <th>总佣金</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addSalespersonBody">
+                                <!-- <tr>
+                                    <td>1</td>
+                                    <td>user_test</td>
+                                    <td>12</td>
+                                    <td>12</td>
+                                    <td>12</td>
+                                    <td>12</td>
+                                    <td>
+                                        <div style="display: inline-block;margin-right: 10px;">
+                                            <a class="alertBox" href="#" title="修改销售员信息" data-toggle="modal" data-target="#editSalesperson" onclick="fillEditUsername('')">
+                                                <span class="glyphicon glyphicon-pencil " aria-hidden="true"></span>
+                                            </a>
+                                        </div>
+                                        <div style="display: inline-block;margin-right: 10px;">
+                                            <a href="#" title="删除" onclick="deleteUser('')">
+                                                <span class="glyphicon glyphicon-remove " aria-hidden="true"></span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 添加销售员 -->
+
+        <div class="modal fade" id="addSalesperson" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">添加销售员</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="addUsername" class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="addUsername" name="addUsername" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-sm-2 control-label">密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" step="1" class="form-control" id="addPassword" name="password" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-sm-2 control-label">确认密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" step="1" class="form-control" id="addRepassword" name="repassword" placeholder="">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <input class="btn btn-default pull-right" type="button" onclick="addUserButtonClick();" value="提交">
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editSalesperson" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">编辑销售员</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <input type="hidden" class="form-control" id="editUsername" name="editUsername">
+                        <div class="form-group">
+                            <label for="editPassword" class="col-sm-2 control-label">密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" step="1" class="form-control" id="editPassword" name="password" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editRepassword" class="col-sm-2 control-label">确认密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" step="1" class="form-control" id="editRepassword" name="repassword" placeholder="">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <input class="btn btn-default pull-right" type="button" onclick="editUserButtonClick();" value="提交">
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="/js/jquery/3.3.1/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="/js/bootstrap.js"></script>
+        <script type="text/javascript">
+            
+            $(document).ready(function() {
+                checkIsLogin();
+            });
+
+            function checkIsLogin() {
+                $.ajax({
+                    type: "POST",
+                    url: "/login/isLogin/",
+                    success: function(data, textState, jqXHR) {
+                        
+                        console.log("CheckIsLogin(): data = ", data);
+                        if (data.response == 1 && data.identify == 0) {
+                            $("#username").html(data.username + "<span class=\"caret\"></span>");
+                            getSalesmanData();
+                            return;
+                        } else {
+                            window.location.href = "/login.html";
+                        }
+                    },
+                    error: function(textState, jqXHR, error) {
+                        console.log(error);
+                        return;
+                    }
+                });
+            }
+
+            function getSalesmanData() {
+                $.ajax({
+                    type: "POST",
+                    url: "/gunsmith/getman/",
+                    success: function(data) {
+                        
+                        if (data.response != 1) {
+                            alert(data.message);
+                            return;
+                        }
+
+                        var users = data.users;
+
+                        for (var i = 0; i < users.length; i++) {
+                            var innerhtml = "<tr><td>" + (i+1).toString() +"</td><td>" + users[i].username.toString() 
+                                + "</td><td>" + users[i].locksSales + "</td><td>" + users[i].stocksSales 
+                                + "</td><td>" + users[i].barrelsSales + "</td>"
+                                + "<td>" + users[i].commission + "</td><td>"
+                                + "<div style=\"display: inline-block;margin-right: 10px;\">"
+                                + "<a class=\"alertBox\" href=\"#\" title=\"修改销售员信息\" data-toggle=\"modal\" " 
+                                + " data-target=\"#editSalesperson\" onclick=\"fillEditUsername('" 
+                                + users[i].username + "')\">"
+                                + "<span class=\"glyphicon glyphicon-pencil \" aria-hidden=\"true\"></span>"
+                                + "</a></div><div style=\"display: inline-block;margin-right: 10px;\">"
+                                + "<a href=\"#\" title=\"删除\" onclick=\"deleteUser('" + users[i].username + "')\">"
+                                + "<span class=\"glyphicon glyphicon-remove \" aria-hidden=\"true\"></span>"
+                                + "</a></div>"
+                                + "</td></tr>";
+                            
+                            $("#addSalespersonBody").html($("#addSalespersonBody").html() + innerhtml);
+                        }
+                    }
+                });
+            }
+
+            function logout() {
+                console.log("logout");
+                $.ajax({
+                    type: "POST",
+                    url: "/login/logout/",
+                    success: function(data, textState, jqXHR) {
+
+                        console.log(data);
+                        if (data.response == 1) {
+                            $(location).attr('href', '/login.html');
+                        }
+                    },
+                    error: function(textState, jqXHR, error) {
+
+                        alert("服务器宕机了～～请检查网络或者联系系统管理员");
+                        console.log(error);
+                        return;
+                    }
+                });
+            }
+
+            function addUserButtonClick() {
+
+                var username = $("#addUsername").val();
+                var password = $("#addPassword").val();                
+                var repassword = $("#addRepassword").val();
+
+                //  Check if username and password are invalid.
+                if (username == "") {
+                    alert("请输入用户名");
+                    return;
+                }
+
+                if (password == "") {
+                    alert("请输入密码");
+                    return;
+                }
+
+                if (repassword == "") {
+                    alert("请输入确认密码");
+                    return;
+                }
+
+                //  Create RegExp object.
+                var usernamePattern = /^[a-zA-Z0-9_]{3,16}$/;
+                var passwordPattern = /^[a-zA-Z0-9_]{6,128}$/;
+
+                if (!usernamePattern.test(username)) {
+                    alert("用户名只能由 3-16 位的大小写字母、数字以及下划线组成，请您输入正确形式的用户名");
+                    return;
+                }
+
+                if (!passwordPattern.test(password)) {
+                    alert("密码只能由 6-128 位的大小写字母、数字以及下划线组成，请您输入正确形式密码");
+                    return;
+                }
+
+                if (password != repassword) {
+                    alert("请确认密码是否输入正确");
+                    return;
+                }
+
+                var postData  = {
+                    "username": username,
+                    "password": password
+                };
+                
+                console.log("post data.");
+                console.log(postData);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/gunsmith/addman/",
+                    data: postData,
+                    success: function(data, textState, jqXHR) {
+
+                        var response = data.response;
+                        if (response == 1) {
+
+                            alert("销售员添加成功");
+                            window.location.reload();
+                            return;
+                        } else {
+                            
+                            alert(data.message);
+                            return;
+                        }
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        alert("服务器开小差了～～请检查网络或者联系系统管理员");
+                    }
+                });
+            }
+
+            function fillEditUsername(username) {
+                $("#editUsername").val(username);
+                return;
+            }
+
+            function editUserButtonClick() {
+
+                var username = $("#editUsername").val();
+                var password = $("#editPassword").val();
+                var repassword = $("#editRepassword").val();
+
+                //  Check if username and password are invalid.
+                if (username == "") {
+                    alert("请输入用户名");
+                    return;
+                }
+
+                if (password == "") {
+                    alert("请输入密码");
+                    return;
+                }
+
+                if (repassword == "") {
+                    alert("请输入确认密码");
+                    return;
+                }
+
+                //  Create RegExp object.
+                var usernamePattern = /^[a-zA-Z0-9_]{3,16}$/;
+                var passwordPattern = /^[a-zA-Z0-9_]{6,128}$/;
+
+                if (!usernamePattern.test(username)) {
+                    alert("用户名只能由 3-16 位的大小写字母、数字以及下划线组成，请您输入正确形式的用户名");
+                    return;
+                }
+
+                if (!passwordPattern.test(password)) {
+                    alert("密码只能由 6-128 位的大小写字母、数字以及下划线组成，请您输入正确形式密码");
+                    return;
+                }
+
+                if (password != repassword) {
+                    alert("请确认密码是否输入正确");
+                    return;
+                }
+
+                var postData  = {
+                    "username": username,
+                    "password": password
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/gunsmith/editman/",
+                    data: postData,
+                    success: function(data) {
+
+                        if (data.response == 1) {
+                            alert("修改成功");
+                            window.location.reload();
+                            return;
+                        } else {
+                            alert(data.message);
+                            return;
+                        }
+                    },
+                    error: function(error) {
+
+                        console.log(error);
+                        alert("服务器开小差了～～请确认网络连接或联系系统管理员");
+                        return;
+                    }
+                });
+            }
+
+            function deleteUser(username) {
+                $.ajax({
+                    type: "POST",
+                    url: "/gunsmith/delman/",
+                    data: {
+                        "username": username
+                    },
+                    success: function(data) {
+
+                        if (data.response == 1) {
+                            alert("删除成功");
+                            window.location.reload();
+                            return;
+                        } else {
+                            alert(data.message);
+                            return;
+                        }
+                    },
+                    error: function(error) {
+                        
+                        console.log(error);
+                        alert("服务器开小差了～～请确认网络连接或联系系统管理员");
+                        return;
+                    }
+                });
+            }
+
+        </script>
+    </body>
+</html>

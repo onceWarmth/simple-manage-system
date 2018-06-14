@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <meta name="description" content="">
+        <meta name="author" content="varme">
+
+        <title>枪支管理系统</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="/css/bootstrap.css" rel="stylesheet">
+
+        <link href="/css/index.css" rel="stylesheet">
+
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">枪支管理系统</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">控制台</a></li>
+                        <li class="dropdown">
+                            <a id="username" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" onclick="logout();">注销</a></li>
+                            </ul>
+                        </li>
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar">
+                    <ul class="nav nav-sidebar">
+                        <li><a href="./monthreport.html">月度报表<span class="sr-only"></span></a></li>
+                        <li class="active"><a href="#">历史报表<span class="sr-only"></span></a></li>
+                        <li><a href="./salesperson.html">销售员管理<span class="sr-only"></span></a></li>
+                    </ul>
+                    <ul class="nav nav-sidebar">
+                        <li><a href="#" onclick="logout();">注销<span class="sr-only"></span></a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-9 col-sm-offset-3 col-md-offset-2 main">
+                    <h1 class="page-header">销售员管理</h1>
+
+                    <div id="page_adn_add_div" class="row" style="margin-bottom: 10px">
+                        <div class="col-md-1">
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#addSalesperson">添加</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" style="text-align: center">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>用户名</th>
+                                    <th>时间</th>
+                                    <th>城市</th>
+                                    <th>枪锁销售额</th>
+                                    <th>枪支销售额</th>
+                                    <th>枪管销售额</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportBody">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="/js/jquery/3.3.1/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="/js/bootstrap.js"></script>
+        <script type="text/javascript">
+            
+            $(document).ready(function() {
+                checkIsLogin();
+            });
+
+            function checkIsLogin() {
+                $.ajax({
+                    type: "POST",
+                    url: "/login/isLogin/",
+                    success: function(data, textState, jqXHR) {
+                        
+                        console.log("CheckIsLogin(): data = ", data);
+                        if (data.response == 1 && data.identify == 0) {
+                            $("#username").html(data.username + "<span class=\"caret\"></span>");
+                            getReportData();
+                            return;
+                        } else {
+                            window.location.href = "/login.html";
+                        }
+                    },
+                    error: function(textState, jqXHR, error) {
+                        console.log(error);
+                        return;
+                    }
+                });
+            }
+
+            function getReportData() {
+                $.ajax({
+                    type: "POST",
+                    url: "/gunsmith/getHistoryReports/",
+                    success: function(data) {
+
+                        if (data.response != 1) {
+                            alert(data.message);
+                            return;
+                        }
+
+                        var reports = data.reports;
+                        
+                        for (var i = 0; i < reports.length; i++) {
+
+                            var report = reports[i];
+
+                            var innerhtml = "<tr>"
+                                + "<td>" + (i+1).toString() + "</td>"
+                                + "<td>" + report.username + "</td>"
+                                + "<td>" + report.date + "</td>"
+                                + "<td>" + report.city + "</td>"
+                                + "<td>" + report.locksSales + "</td>"
+                                + "<td>" + report.stocksSales + "</td>"
+                                + "<td>" + report.barrelsSales + "</td>"
+                                + "</tr>";
+
+                            $("#reportBody").html($("#reportBody").html() + innerhtml);
+                        }
+                    },
+                    error: function(error) {
+
+                        alert("服务器宕机了～～请检查网络或者联系系统管理员");
+                        console.log(error);
+                        return;
+                    }
+                });
+            }
+
+            function logout() {
+                console.log("logout");
+                $.ajax({
+                    type: "POST",
+                    url: "/login/logout/",
+                    success: function(data, textState, jqXHR) {
+
+                        console.log(data);
+                        if (data.response == 1) {
+                            $(location).attr('href', '/login.html');
+                        }
+                    },
+                    error: function(textState, jqXHR, error) {
+
+                        alert("服务器宕机了～～请检查网络或者联系系统管理员");
+                        console.log(error);
+                        return;
+                    }
+                });
+            }
+
+        </script>
+    </body>
+</html>

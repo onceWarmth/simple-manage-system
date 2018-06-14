@@ -19,60 +19,148 @@
 //  THE SOFTWARE.
 //
 
-//
-//  Imports.
-//
-var Sequlize = require("sequelize");
-
-//  Create sequlize.
-var sequlize = new Sequlize("gundb", "root", "root", {
-    host: "127.0.0.1",
-    dialect: "mysql",
-    logging: false
-});
-
-//  User model.
-var Users = null;
-
-/**
- * User table 
- * 
- * identify: 0 is admin. 1 is salesman.
- */
-var userTable = {
-    id: {
-        type: Sequlize.STRING,
-        primaryKey: true
-    },
-    passwordSalt: {
-        type: Sequlize.STRING,
-        allowNULL: false
-    },
-    passwordHash: {
-        type: Sequlize.STRING,
-        allowNULL: false
-    },
-    identify: {
-        type: Sequlize.INTEGER,
-        allowNULL: false
-    }
-};
-
 function ModelInitial() {
-
-    //  User tables.
-    Users = sequlize.define("users", userTable);
-
-    //  DB sync.
-    sequlize.sync();
 }
 
 (function() {
-    ModelInitial();
-})();
+    //
+    //  Imports.
+    //
+    var Sequelize = require("sequelize");
 
-//  Export public APIs.
-module.exports = {
-    Users: Users,
-    Op: Sequlize.Op
-};
+    //  Create sequelize.
+    var sequelize = new Sequelize("gundb", "root", "root", {
+        host: "127.0.0.1",
+        dialect: "mysql",
+        logging: false,
+        define: {
+            charset: "utf8",
+        }
+    });
+
+
+    /**
+     * Users table 
+     * 
+     * identify: 0 is admin. 1 is salesman.
+     */
+    var Users = sequelize.define("users", {
+        id: {
+            type: Sequelize.STRING,
+            primaryKey: true
+        },
+        passwordSalt: {
+            type: Sequelize.STRING,
+            allowNULL: false
+        },
+        passwordHash: {
+            type: Sequelize.STRING,
+            allowNULL: false
+        },
+        identify: {
+            type: Sequelize.INTEGER,
+            allowNULL: false
+        },
+        locksSales: {
+            type: Sequelize.INTEGER,
+            allowNULL: false
+        },
+        stocksSales: {
+            type: Sequelize.INTEGER,
+            allowNULL: false
+        },
+        barrelsSales: {
+            type: Sequelize.INTEGER,
+            allowNULL: false
+        },
+        commission: {
+            type: Sequelize.DOUBLE,
+            allowNull: false
+        }
+    });
+
+    var Reports = sequelize.define("reports", {
+        id: {
+            type: Sequelize.STRING,
+            primaryKey: true
+        },
+        username: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        year: {
+            type: Sequelize.INTEGER,
+            allowNULL: false
+        },
+        month: {
+            type: Sequelize.INTEGER,
+            allowNULL: false
+        },
+        timestamp: {
+            type: Sequelize.BIGINT,
+            allowNULL: false
+        },
+        city: {
+            type: Sequelize.STRING,
+            allowNULL: false
+        },
+        locksSales: {
+            type: Sequelize.INTEGER,
+            allowNULL: false
+        },
+        stocksSales: {
+            type: Sequelize.INTEGER,
+            allowNULL: false
+        },
+        barrelsSales: {
+            type: Sequelize.INTEGER,
+            allowNULL: false
+        }
+    });
+
+    var Commission = sequelize.define("commission", {
+        id: {
+            type: Sequelize.STRING,
+            primaryKey: true
+        },
+        username: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        year: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        month: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        locksSales: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        stocksSales: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        barrelsSales: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        commission: {
+            type: Sequelize.DOUBLE,
+            allowNull: false
+        }
+    });
+
+    //  DB sync.
+    sequelize.sync();
+
+    //  Export public APIs.
+    module.exports = {
+        Users: Users,
+        Reports: Reports,
+        Commission: Commission,
+        Op: Sequelize.Op
+    };
+})();

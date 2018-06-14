@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <meta name="description" content="">
+        <meta name="author" content="varme">
+
+        <title>枪支管理系统</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="/css/bootstrap.css" rel="stylesheet">
+
+        <link href="/css/index.css" rel="stylesheet">
+
+    </head>
+
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">枪支管理系统</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">控制台</a></li>
+                        <li class="dropdown">
+                            <a id="username" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">username<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" onclick="logout();">注销</a></li>
+                            </ul>
+                        </li>
+                       
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar">
+                    <ul class="nav nav-sidebar">
+                        <li><a href="./sales.html">本月销售状况<span class="sr-only"></span></a></li>
+                        <li class="active"><a href="#">历史佣金情况<span class="sr-only"></span></a></li>
+                        <li><a href="./report.html">历史报表情况<span class="sr-only"></span></a></li>
+                    </ul>
+                    <ul class="nav nav-sidebar">
+                        <li><a href="#">修改密码<span class="sr-only"></span></a></li>
+                    </ul>
+                    <ul class="nav nav-sidebar">
+                        <li><a href="#" onclick="logout();">注销<span class="sr-only"></span></a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-9 col-sm-offset-3 col-md-offset-2 main">
+                    <h1 class="page-header">历史佣金情况</h1>
+
+                    <p id="info-label" class="bg-warning center-block text-center">暂无报表</p>
+
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" style="text-align: center">
+                            <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>时间</th>
+                                    <th>枪锁总销售额</th>
+                                    <th>枪支总销售额</th>
+                                    <th>枪管总销售额</th>
+                                    <th>佣金额</th>
+                                </tr>
+                            </thead>
+                            <tbody id="commissionRepory">
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="/js/jquery/3.3.1/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="/js/bootstrap.js"></script>
+        <script type="text/javascript">
+
+            var ADD_REPORT_URL = "/salesman/addReport/";
+            var DEL_REPORT_URL = "/salesman/deleteReport/";
+            var GET_CURRENT_REPORT_URL = "/salesman/getReportData/";
+            var GET_HISTORY_REPORT_URL = "/salesman/getHistoryReports/";
+            var GET_HISTORY_COMMISSION_URL = "/salesman/getHistoryCommision/";
+            
+            $(document).ready(function() {
+                checkIsLogin();
+            });
+
+            function checkIsLogin() {
+                $.ajax({
+                    type: "POST",
+                    url: "/login/isLogin/",
+                    success: function(data, textState, jqXHR) {
+                        
+                        console.log("CheckIsLogin(): data = ", data);
+                        if (data.response == 1 && data.identify == 1) {
+                            $("#username").html(data.username + "<span class=\"caret\"></span>");
+                            getCommissionData();
+                            return;
+                        } else {
+                            window.location.href = "/login.html";
+                        }
+                    },
+                    error: function(textState, jqXHR, error) {
+                        console.log(error);
+                        window.location.href("/login.html");
+                        return;
+                    }
+                });
+            }
+
+            function getCommissionData() {
+
+                $.ajax({
+                    type: "POST",
+                    url: GET_HISTORY_COMMISSION_URL,
+                    success: function(data) {
+
+                        if (data.response != 1) {
+                            alert(data.message);
+                            return;
+                        }
+
+                        var commission = data.commission;
+
+                        if (commission.length != 0) {
+                            $("#info-label").hide();
+                        }
+
+                        console.log(data);
+
+                        for (var i = 0; i < commission.length; i++) {
+
+                            var obj = commission[i];
+                            
+                            var innerhtml = "<tr>"
+                                + "<td>" + (i+1).toString() + "</td>"
+                                + "<td>" + obj.date + "</td>"
+                                + "<td>" + obj.locksSales + "</td>"
+                                + "<td>" + obj.stocksSales + "</td>"
+                                + "<td>" + obj.barrelsSales + "</td>"
+                                + "<td>" + obj.commission + "</td>";
+                            
+                            $("#commissionRepory").html($("#commissionRepory").html() + innerhtml);
+                        }
+
+                    },
+                    error: function(error) {
+                        alert("服务器宕机了～～请检查网络或者联系系统管理员");
+                        console.log(error);
+                        return;
+                    }
+                });
+            }
+
+            function logout() {
+
+                $.ajax({
+                    type: "POST",
+                    url: "/login/logout/",
+                    success: function(data, textState, jqXHR) {
+
+                        console.log(data);
+                        if (data.response == 1) {
+                            $(location).attr('href', '/login.html');
+                        }
+                    },
+                    error: function(textState, jqXHR, error) {
+
+                        alert("服务器宕机了～～请检查网络或者联系系统管理员");
+                        console.log(error);
+                        return;
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>
