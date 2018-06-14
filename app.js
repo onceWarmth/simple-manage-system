@@ -44,6 +44,10 @@ app.use(BodyParser.urlencoded({
     extended: true
 }));
 
+app.get("/", function(request, response) {
+    response.redirect("/login.html");
+});
+
 //  Login module.
 app.use("/login/", RoutesLogin);
 
