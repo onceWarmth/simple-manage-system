@@ -184,16 +184,28 @@ function addReport(request, response) {
                 //  Create commission.
                 if (locksSales == -1) {
 
-                    var cost = locksSalesSum * LOCKS_COST 
-                        + stocksSalesSum * STOCKS_COST
-                        + barrelsSalesSum * BARRELS_COST;
+                    var cost = 0;
+                    if (locksSales == 0 || stocksSales == 0 || barrelsSales == 0) {
+                        cost = 0;
+                    } else {
+                        cost = locksSalesSum * LOCKS_COST 
+                            + stocksSalesSum * STOCKS_COST
+                            + barrelsSalesSum * BARRELS_COST;
+                    }
+
                     var commission = 0;
                     if (cost <= 1000) {
-                        commission = Math.floor(cost * 0.1 * 100) / 100;
+                        commission += 0.10 * commission;
+                        commission = Math.floor(commission * 100) / 100;
                     } else if (cost <= 1800) {
-                        commission = Math.floor(cost * 0.15 * 100) / 100;
+                        commission += 0.10 * 1000;
+                        commission += 0.15 * (cost - 1000);
+                        commission = Math.floor(commission * 100) / 100;
                     } else {
-                        commission = Math.floor(cost * 0.2 * 100) / 100;
+                        commission += 0.10 * 1000;
+                        commission += 0.15 * 800;
+                        commission += 0.20 * (cost - 1800);
+                        commission = Math.floor(commission * 100) / 100;
                     }
                     var commissionId = Uuid.v1();
                     LibsModels.Commission.findOrCreate({
