@@ -546,6 +546,10 @@ function getHistoryReports(request, response) {
                 continue;
             }
 
+            if (report.locksSales == -1) {
+                continue;
+            }
+
             var data = {
                 date: getDateFromTimestamp(report.timestamp),
                 city: report.city,
