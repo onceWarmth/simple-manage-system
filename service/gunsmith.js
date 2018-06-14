@@ -331,6 +331,10 @@ function getHistoryReports(request, response) {
         for (var i = 0; i < projects.length; i++) {
 
             var report = projects[i];
+
+            if (report.locksSales == -1) {
+                continue;
+            }
             
             var data = {
                 username: report.username,
