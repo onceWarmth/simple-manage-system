@@ -185,7 +185,7 @@ function addReport(request, response) {
                 if (locksSales == -1) {
 
                     var cost = 0;
-                    if (locksSales == 0 || stocksSales == 0 || barrelsSales == 0) {
+                    if (locksSalesSum == 0 || stocksSalesSum == 0 || barrelsSalesSum == 0) {
                         cost = 0;
                     } else {
                         cost = locksSalesSum * LOCKS_COST 
@@ -207,6 +207,7 @@ function addReport(request, response) {
                         commission += 0.20 * (cost - 1800);
                         commission = Math.floor(commission * 100) / 100;
                     }
+
                     var commissionId = Uuid.v1();
                     LibsModels.Commission.findOrCreate({
                         where: {
