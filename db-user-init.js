@@ -12,7 +12,7 @@ var userPassword = "password";
 
 insertUser(userUsername, userPassword, 1);
 
-for (var i = 0; i < 10; i++) {
+for (var i = 0; i < 20; i++) {
     
     var salesmanUsername = Util.format(
         "user%d",
