@@ -85,7 +85,7 @@ for (var month = 0; month < 6; month++) {
                     username: projects[0].username,
                     year: projects[0].year,
                     month: projects[0].month,
-                    locksSales: stocksSalesSum,
+                    locksSales: locksSalesSum,
                     stocksSales: stocksSalesSum,
                     barrelsSales: barrelsSalesSum,
                     commission: commission
