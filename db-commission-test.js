@@ -34,6 +34,11 @@ for (var month = 0; month < 6; month++) {
             for (var j = 0; j < projects.length; j++) {
 
                 var report = projects[j]
+
+                if (report.locksSales == -1) {
+                    continue;
+                }
+
                 locksSalesSum += report.locksSales;
                 stocksSalesSum += report.stocksSales;
                 barrelsSalesSum += report.barrelsSales;

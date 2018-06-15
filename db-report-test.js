@@ -84,6 +84,29 @@ for (var month = 0; month < 6; month++) {
             });
             
         }
+
+        var reportId = Uuid.v1();
+
+        LibsModels.Reports.findOrCreate({
+            where: {
+                id: reportId
+            },
+            defaults: {
+                id: reportId,
+                username: username,
+                year: year,
+                month: month + 1,
+                timestamp: timestamp,
+                city: " ",
+                locksSales: -1,
+                stocksSales: 0,
+                barrelsSales: 0
+            }
+        }).spread(function(report, created) {
+            if (created) {
+                console.log("-1 value created success.");
+            }
+        })
     }
 }
 
