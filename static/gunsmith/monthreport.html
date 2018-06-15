@@ -103,10 +103,10 @@
                                     <th>序号</th>
                                     <th>用户名</th>
                                     <th>时间</th>
-                                    <th>枪锁总销售额</th>
-                                    <th>枪托总销售额</th>
-                                    <th>枪管总销售额</th>
-                                    <th>总佣金</th>
+                                    <th>枪锁总销售额<a href="#" onclick="dataSort(1);"><span class="caret"></span></a></th>
+                                    <th>枪托总销售额<a href="#" onclick="dataSort(2);"><span class="caret"></span></a></th>
+                                    <th>枪管总销售额<a href="#" onclick="dataSort(3);"><span class="caret"></span></a></th>
+                                    <th>总佣金<a href="#" onclick="dataSort(4);"><span class="caret"></span></a></th>
                                 </tr>
                             </thead>
                             <tbody id="commissionBody">
@@ -123,6 +123,12 @@
         <script type="text/javascript">
 
             var commissionData = [];
+            var currentData = [];
+
+            var isLocksUpOrder = true;
+            var isStocksUpOrder = true;
+            var isBarrelsUpOrder = true;
+            var isCommissionUpOrder = true;
             
             $(document).ready(function() {
                 checkIsLogin();
@@ -179,6 +185,8 @@
             }
 
             function showCommissionData(data) {
+
+                currentData = data;
 
                 $("#commissionBody").html("");
 
@@ -335,6 +343,73 @@
                         }
                     }
                     data = temp;
+                }
+
+                showCommissionData(data);
+                
+            }
+            
+
+            function dataSort(sortParam) {
+
+                var LOCKS_PARAM = 1;
+                var STOCKS_PARAM = 2;
+                var BARRELS_PARAM = 3;
+                var COMMISSION_PARAM = 4;
+
+                var data = currentData;
+                
+                if (sortParam == LOCKS_PARAM) {
+
+                    if (isLocksUpOrder) {
+                        data.sort(function(a, b) {
+                            return a.locksSales < b.locksSales ? 1 : -1;
+                        });
+                    } else {
+                        data.sort(function(a, b) {
+                            return a.locksSales > b.locksSales ? 1 : -1;
+                        });
+                    }
+
+                    isLocksUpOrder = !isLocksUpOrder;
+                } else if (sortParam == STOCKS_PARAM) {
+
+                    if (isStocksUpOrder) {
+                        data.sort(function(a, b) {
+                            return a.stocksSales < b.stocksSales ? 1 : -1;
+                        });
+                    } else {
+                        data.sort(function(a, b) {
+                            return a.stocksSales > b.stocksSales ? 1 : -1;
+                        });
+                    }
+
+                    isStocksUpOrder = !isStocksUpOrder;
+                } else if (sortParam == BARRELS_PARAM) {
+
+                    if (isBarrelsUpOrder) {
+                        data.sort(function(a, b) {
+                            return a.barrelsSales < b.barrelsSales ? 1 : -1;
+                        });
+                    } else {
+                        data.sort(function(a, b) {
+                            return a.barrelsSales > b.barrelsSales ? 1 : -1;
+                        });
+                    }
+
+                    isBarrelsUpOrder = !isBarrelsUpOrder;
+                } else if (sortParam == COMMISSION_PARAM) {
+                    if (isCommissionUpOrder) {
+                        data.sort(function(a, b) {
+                            return a.commission < b.commission ? 1 : -1;
+                        });
+                    } else {
+                        data.sort(function(a, b) {
+                            return a.commission > b.commission ? 1 : -1;
+                        });
+                    }
+
+                    isCommissionUpOrder = !isCommissionUpOrder;
                 }
 
                 showCommissionData(data);
