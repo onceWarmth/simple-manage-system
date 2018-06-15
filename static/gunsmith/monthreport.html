@@ -15,6 +15,12 @@
 
         <link href="/css/index.css" rel="stylesheet">
 
+        <style>
+            .input-search{
+                padding-bottom: 10px;
+            }
+        </style>
+
     </head>
 
     <body>
@@ -53,6 +59,43 @@
                 <div class="col-sm-9 col-sm-offset-3 col-md-offset-2 main">
                     <h1 class="page-header">月度佣金报表</h1>
 
+                    <div class="" data-toggle="collapse">
+                        <form id="search_form" method="POST" class="form-inline form-search" style="padding-bottom:20px; padding-top:20px;">
+                            <div class="input-group input-search">
+                                <span class="input-group-addon">用户名</span>
+                                <input name="username" id="search-username" type="text" class="form-control" placeholder="" autofocus>
+                            </div>
+                            <div class="input-group input-search">
+                                <span class="input-group-addon">枪锁销售额</span>
+                                <input name="locksMin" id="search-locks-min" type="number" step="any" class="form-control" placeholder="" style="width: 80px;" autofocus>
+                                <span class="input-group-addon">~</span>
+                                <input name="locksMax" id="search-locks-max" type="number" step="any" class="form-control" placeholder="" style="width: 80px;" autofocus>
+                            </div>
+                            <div class="input-group input-search">
+                                <span class="input-group-addon">枪托销售额</span>
+                                <input name="stocksMin" id="search-stocks-min" type="number" step="any" class="form-control" placeholder="" style="width: 80px;" autofocus>
+                                <span class="input-group-addon">~</span>
+                                <input name="stocksMax" id="search-stocks-max" type="number" step="any" class="form-control" placeholder="" style="width: 80px;" autofocus>
+                            </div>
+                            <div class="input-group input-search">
+                                <span class="input-group-addon">枪管销售额</span>
+                                <input name="barrelsMin" id="search-barrels-min" type="number" step="any" class="form-control" placeholder="" style="width: 80px;" autofocus>
+                                <span class="input-group-addon">~</span>
+                                <input name="barrelsMax" id="search-barrels-max" type="number" step="any" class="form-control" placeholder="" style="width: 80px;" autofocus>
+                            </div>
+                            <div class="input-group input-search">
+                                <span class="input-group-addon">总佣金</span>
+                                <input name="commissionMin" id="search-commission-min" type="number" step="any" class="form-control" placeholder="" style="width: 80px;" autofocus>
+                                <span class="input-group-addon">~</span>
+                                <input name="commissionMax" id="search-commission-max" type="number" step="any" class="form-control" placeholder="" style="width: 80px;" autofocus>
+                            </div>
+                               
+                            <div class="input-group input-search">
+                                <button type="button" class="btn btn-primary" onclick="searchEvent();">搜索</button>
+                            </div>
+                        </form>
+                    </div>
+
                     <div class="table-responsive">
                         <table class="table table-striped table-hover" style="text-align: center">
                             <thead>
@@ -78,6 +121,8 @@
         <script type="text/javascript" src="/js/jquery/3.3.1/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="/js/bootstrap.js"></script>
         <script type="text/javascript">
+
+            var commissionData = [];
             
             $(document).ready(function() {
                 checkIsLogin();
@@ -117,25 +162,12 @@
                             alert(data.message);
                             return;
                         }
+                        
+                        
 
-                        var commissionData = data.commission;
+                        commissionData = data.commission;
 
-                        for (var i = 0; i < commissionData.length; i++) {
-                            
-                            var commission = commissionData[i];
-
-                            var innerhtml = "<tr>"
-                                + "<td>" + (i+1).toString() + "</td>"
-                                + "<td>" + commission.username + "</td>"
-                                + "<td>" + commission.date + "</td>"
-                                + "<td>" + commission.locksSales + "</td>"
-                                + "<td>" + commission.stocksSales + "</td>"
-                                + "<td>" + commission.barrelsSales + "</td>"
-                                + "<td>" + commission.commission + "</td>"
-                                + "</tr>";
-                            
-                            $("#commissionBody").html($("#commissionBody").html() + innerhtml);
-                        }
+                        showCommissionData(commissionData);
                     },
                     error: function(error) {
 
@@ -144,6 +176,28 @@
                         return;
                     }
                 });
+            }
+
+            function showCommissionData(data) {
+
+                $("#commissionBody").html("");
+
+                for (var i = 0; i < data.length; i++) {
+                            
+                    var commission = data[i];
+
+                    var innerhtml = "<tr>"
+                        + "<td>" + (i+1).toString() + "</td>"
+                        + "<td>" + commission.username + "</td>"
+                        + "<td>" + commission.date + "</td>"
+                        + "<td>" + commission.locksSales + "</td>"
+                        + "<td>" + commission.stocksSales + "</td>"
+                        + "<td>" + commission.barrelsSales + "</td>"
+                        + "<td>" + commission.commission + "</td>"
+                        + "</tr>";
+                    
+                    $("#commissionBody").html($("#commissionBody").html() + innerhtml);
+                }
             }
 
             function logout() {
@@ -165,6 +219,126 @@
                         return;
                     }
                 });
+            }
+
+            function searchEvent() {
+                console.log("seach event.");
+
+                var username = $("#search-username").val();
+                var locksMin = $("#search-locks-min").val();
+                var locksMax = $("#search-locks-max").val();
+                var stocksMin = $("#search-stocks-min").val();
+                var stocksMax = $("#search-stocks-max").val();
+                var barrelsMin = $("#search-barrels-min").val();
+                var barrelsMax = $("#search-barrels-max").val();
+                var commissionMin = $("#search-commission-min").val();
+                var commissionMax = $("#search-commission-max").val();
+
+                var data = commissionData;
+
+                if (username != "") {
+                    var temp = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        if (d.username == username) {
+                            temp.push(d);
+                        }
+                    }
+                    data = temp;
+                }
+
+                console.log("data: ", data);
+
+                if (locksMin != "") {
+                    var temp = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        if (d.locksSales >= locksMin) {
+                            temp.push(d);
+                        }
+                    }
+                    data = temp;
+                }
+
+                if (locksMax != "") {
+                    var temp = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        if (d.locksSales <= locksMax) {
+                            temp.push(d);
+                        }
+                    }
+                    data = temp;
+                }
+
+                if (stocksMin != "") {
+                    var temp = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        if (d.stocksSales >= stocksMin) {
+                            temp.push(d);
+                        }
+                    }
+                    data = temp;
+                }
+            
+                if (stocksMax != "") {
+                    var temp = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        if (d.stocksSales <= stocksMax) {
+                            temp.push(d);
+                        }
+                    }
+                    data = temp;
+                }
+
+                if (barrelsMin != "") {
+                    var temp = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        if (d.barrelsSales >= barrelsMin) {
+                            temp.push(d);
+                        }
+                    }
+                    data = temp;
+                }
+
+                if (barrelsMax != "") {
+                    var temp = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        if (d.barrelsSales <= barrelsMax) {
+                            temp.push(d);
+                        }
+                    }
+                    data = temp;
+                }
+
+                if (commissionMin != "") {
+                    var temp = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        if (d.commission >= commissionMin) {
+                            temp.push(d);
+                        }
+                    }
+                    data = temp;
+                }
+
+                if (commissionMax != "") {
+                    var temp = [];
+                    for (var i = 0; i < data.length; i++) {
+                        var d = data[i];
+                        if (d.commission <= commissionMax) {
+                            temp.push(d);
+                        }
+                    }
+                    data = temp;
+                }
+
+                showCommissionData(data);
+                
             }
 
         </script>
