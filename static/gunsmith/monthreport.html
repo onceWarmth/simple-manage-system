@@ -96,6 +96,12 @@
                         </form>
                     </div>
 
+                    <div id="page_adn_add_div" class="row" style="margin-bottom: 10px">
+                        <div class="col-md-1">
+                            <button class="btn btn-primary" onclick="drawMyChart();">绘制图表</button>
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table class="table table-striped table-hover" style="text-align: center">
                             <thead>
@@ -114,12 +120,18 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <canvas id="canvas1" width="900" height="300">
+                        Your web-browser does not support the HTML5 vancas element.
+                    </canvas>
                 </div>
             </div>
         </div>
 
+
         <script type="text/javascript" src="/js/jquery/3.3.1/jquery-3.3.1.min.js"></script>
         <script type="text/javascript" src="/js/bootstrap.js"></script>
+        <script type="application/javascript" src="../js/awesomechart.js"></script>
         <script type="text/javascript">
 
             var commissionData = [];
@@ -132,6 +144,7 @@
             
             $(document).ready(function() {
                 checkIsLogin();
+                //  $("#canvas1").hide();
             });
 
             function checkIsLogin() {
@@ -415,7 +428,43 @@
                 showCommissionData(data);
                 
             }
+            
+            var mychart = new AwesomeChart('canvas1');
+
+            function drawMyChart(){
+                console.log("I am here.");
+
+                if(!!document.createElement('canvas').getContext){ //check that the canvas
+                                                                // element is supported
+                    //  var mychart = new AwesomeChart('canvas1');
+                    mychart.title = "佣金数 - 2018.8";
+                    
+                    var data = [];
+                    var labels = [];
+                    for (var i = 0; i < currentData.length; i++) {
+                        
+                        data.push(currentData[i].commission);
+                        labels.push(currentData[i].username);
+                    }
+
+                    console.log(data);
+                    console.log(labels);
+
+                    
+                    mychart.data = data;
+                    mychart.labels = labels;
+                    mychart.chartType = 'pareto';
+                    mychart.draw();
+                }
+            }
+        
+            //  window.onload = drawMyChart;
 
         </script>
+                        
+        <script type="application/javascript">
+        
+        </script>
+
     </body>
 </html>
